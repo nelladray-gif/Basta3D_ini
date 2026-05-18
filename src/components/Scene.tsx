@@ -56,16 +56,31 @@ function Grid() {
   );
 }
 
-export default function Scene() {
+export default function Scene({ 
+  rotationX = -25, 
+  rotationY = 45, 
+  scale = 1,
+  lightIntensity = 1,
+  ambientIntensity = 0.5
+}: { 
+  rotationX?: number, 
+  rotationY?: number, 
+  scale?: number,
+  lightIntensity?: number,
+  ambientIntensity?: number
+}) {
   return (
     <div id="scene-container" className="w-full h-full absolute top-0 left-0 -z-10 bg-bg-main">
       <Canvas shadows dpr={[1, 2]}>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} castShadow />
-        <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+        <ambientLight intensity={ambientIntensity} />
+        <pointLight position={[10, 10, 10]} intensity={lightIntensity} castShadow />
+        <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={lightIntensity} />
         
-        <AbstractSphere />
+        <group rotation={[THREE.MathUtils.degToRad(rotationX), THREE.MathUtils.degToRad(rotationY), 0]} scale={scale}>
+          <AbstractSphere />
+        </group>
+        
         <Grid />
         
         <OrbitControls 
@@ -73,8 +88,6 @@ export default function Scene() {
           enableZoom={true} 
           minDistance={3} 
           maxDistance={10}
-          autoRotate
-          autoRotateSpeed={0.5}
         />
       </Canvas>
     </div>
