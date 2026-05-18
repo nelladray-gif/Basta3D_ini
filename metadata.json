@@ -1,0 +1,6 @@
+{
+  "name": "Dimension3D",
+  "description": "An interactive 3D design showcase featuring draggable assets and immersive glassmorphic UI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

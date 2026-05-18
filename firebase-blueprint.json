@@ -1,0 +1,35 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "A saved 3D scene configuration",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the project"
+        },
+        "cameraPosition": {
+          "type": "array",
+          "description": "Camera [x, y, z] position"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the project was created"
+        },
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the user who owns this project"
+        }
+      },
+      "required": ["name", "cameraPosition", "createdAt", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "User saved 3D projects"
+    }
+  }
+}

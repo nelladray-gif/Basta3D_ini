@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Master Gate / Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(data) {
+      return isSignedIn() && data.ownerId == request.auth.uid;
+    }
+
+    function isValidId(id) {
+       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Validation Helper for Project ---
+    function isValidProject(data) {
+      return data.keys().hasAll(['name', 'cameraPosition', 'createdAt', 'ownerId']) &&
+             data.keys().size() == 4 &&
+             data.name is string && data.name.size() <= 100 &&
+             data.cameraPosition is list && data.cameraPosition.size() == 3 &&
+             data.cameraPosition[0] is float || data.cameraPosition[0] is int &&
+             data.createdAt == request.time &&
+             data.ownerId == request.auth.uid;
+    }
+
+    function isValidProjectUpdate(data, existing) {
+       // Check schema and invariant fields
+       return data.keys().hasAll(['name', 'cameraPosition', 'createdAt', 'ownerId']) &&
+              data.name is string && data.name.size() <= 100 &&
+              data.cameraPosition is list && data.cameraPosition.size() == 3 &&
+              data.createdAt == existing.createdAt &&
+              data.ownerId == existing.ownerId;
+    }
+
+    // --- Collections ---
+    match /projects/{projectId} {
+      allow get: if isOwner(resource.data);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() && 
+                      isValidId(projectId) && 
+                      isValidProject(request.resource.data);
+                      
+      allow update: if isSignedIn() && 
+                      isOwner(resource.data) &&
+                      isValidProjectUpdate(request.resource.data, resource.data) &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'cameraPosition']);
+                      
+      allow delete: if isOwner(resource.data);
+    }
+  }
+}

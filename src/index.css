@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@300;700&family=Space+Grotesk:wght@300;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-technical: "Space Grotesk", sans-serif;
+
+  --color-brand: #3b82f6;
+  --color-bg-main: #0a0a0c;
+  --color-bg-sidebar: #111114;
+  --color-bg-accent: #1c1c21;
+  --color-border: #2d2d33;
+  --color-text-muted: #8e8e93;
+  --color-text-sub: #54545b;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-main text-slate-200 font-sans antialiased;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+.glass {
+  background: rgba(17, 17, 20, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+}
+
+.sidebar {
+  @apply bg-bg-sidebar border-border;
+}
+
+.section-title {
+  @apply text-[10px] uppercase font-bold tracking-[1px] text-text-sub mb-3;
+}
+
+.nav-item {
+  @apply text-[13px] text-text-muted hover:text-white transition-colors cursor-pointer;
+}
+
+.panel-item {
+  @apply flex items-center gap-2 p-2 rounded transition-colors text-[13px] hover:bg-bg-accent;
+}
+
+.panel-item.active {
+  @apply bg-bg-accent text-brand;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-linear-to-r from-white via-slate-400 to-slate-700;
+}
